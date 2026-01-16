@@ -3,14 +3,56 @@
 /////////////
 
 let results = [];
+window.onload = function () {
+  CreateTables();
+  AddButtonListenerById("#cityButton", HandleCityClick);
+  AddButtonListenerById("#countryButton", HandleCountryClick);
+  AddButtonListenerById("#populationButton", HandlePopulationClick);
+};
 
-///////////// /////
-// Main Function //
-///////////// /////
+////////////////////////
+// Button Click Events//
+////////////////////////
 
-///////////// ///////
-// Helper Function //
-///////////// ///////
+function HandleCityClick() {}
+function HandleCountryClick() {}
+function HandlePopulationClick() {}
+
+////////////////////
+// Main Functions //
+////////////////////
+
+function CreateTables() {
+  let table = document.querySelector("#theTableContainer");
+  let html = "<table><tr><th>City</th><th>Country</th><th>Population</th></th>";
+  for (let i = 0; i < PLACES.length; i++) {
+    let rowData = PLACES[i].split(",");
+    html += `<tr>`;
+    for (let p = 0; p < 3; p++) {
+      if (p === 2) {
+        html += `<td>${Number(rowData[p]).toLocaleString()}</td>`;
+      } else {
+        html += `<td>${rowData[p]}</td>`;
+      }
+    }
+    html += `</tr>`;
+  }
+  html += "</table>";
+  table.innerHTML = html;
+}
+
+//////////////////////
+// Helper Functions //
+//////////////////////
+
+function AddButtonListenerById(idName, func) {
+  let button = document.querySelector(idName);
+  button.addEventListener("click", func);
+}
+
+function CleanPopulationString(strToBeNum) {
+  return Number(strToBeNum.replaceAll(",", ""));
+}
 
 // Keeping this at the bottom but its global
 const PLACES = [
