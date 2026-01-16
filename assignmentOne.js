@@ -14,9 +14,18 @@ window.onload = function () {
 // Button Click Events//
 ////////////////////////
 
-function HandleCityClick() {}
-function HandleCountryClick() {}
-function HandlePopulationClick() {}
+function HandleCityClick() {
+  ClearData();
+  AddHighlights(["#cityInput"], 0);
+}
+function HandleCountryClick() {
+  ClearData();
+  AddHighlights(["#countryInput"], 1);
+}
+function HandlePopulationClick() {
+  ClearData();
+  AddHighlights(["#populationMaxInput", "#populationMinInput"], 2);
+}
 
 ////////////////////
 // Main Functions //
@@ -41,9 +50,60 @@ function CreateTables() {
   table.innerHTML = html;
 }
 
+function AddHighlights(searchFor, indexOfData) {
+  let rows = document.querySelectorAll("tr");
+  if (searchFor.length === 2) {
+    let minVal = GetValueById(searchFor[0], true);
+    let maxVal = GetValueById(searchFor[1], true);
+    for (let i = 1; i < rows.length; i++) {
+      let currentRow = rows[i];
+      let rowData = currentRow.querySelectorAll("td");
+      let targetData = Number(rowData[indexOfData].innerHTML());
+      if (minVal <= targetValue && targetValue <= maxVal) {
+        targetData[indexOfData].classList.add("highlight");
+      }
+    }
+  } else {
+    let targetValue = GetValueById(searchFor[0]).toLowerCase();
+    for (let i = 1; i < rows.length; i++) {
+      let currentRow = rows[i];
+      let rowData = currentRow.querySelectorAll("td");
+      let targetData = rowData[indexOfData].innerHTML.toLowerCase();
+      if (targetData.includes(targetValue)) {
+        currentRow.classList.add("highlight");
+      }
+    }
+  }
+}
+
 //////////////////////
 // Helper Functions //
 //////////////////////
+
+function GetValueById(id, isInt = false) {
+  let element = document.querySelector(id);
+  let docVal = element.value;
+  if (isInt) {
+    let fixedVal = CleanPopulationString(docVal);
+    return Number(fixedVal);
+  }
+  return docVal;
+}
+// Probably overkill..
+function ClearData() {
+  ClearHighlights();
+  ClearResults();
+}
+function ClearHighlights() {
+  let highlightList = document.querySelectorAll(".highlight");
+  for (let i = 0; i < highlightList.length; i++) {
+    let highlightItem = highlightList[i];
+    highlightItem.classList.remove("highlight");
+  }
+}
+function ClearResults() {
+  results = [];
+}
 
 function AddButtonListenerById(idName, func) {
   let button = document.querySelector(idName);
