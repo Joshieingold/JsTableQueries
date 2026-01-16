@@ -24,7 +24,7 @@ function HandleCountryClick() {
 }
 function HandlePopulationClick() {
   ClearData();
-  AddHighlights(["#populationMaxInput", "#populationMinInput"], 2);
+  AddHighlights(["#populationMinInput", "#populationMaxInput"], 2);
 }
 
 ////////////////////
@@ -51,19 +51,29 @@ function CreateTables() {
 }
 
 function AddHighlights(searchFor, indexOfData) {
+  // Rows are the same each time.
   let rows = document.querySelectorAll("tr");
+
   if (searchFor.length === 2) {
+    // If searching for the range of numbers
     let minVal = GetValueById(searchFor[0], true);
     let maxVal = GetValueById(searchFor[1], true);
+    if (maxVal === 0) {
+      maxVal = 13076300;
+    }
     for (let i = 1; i < rows.length; i++) {
       let currentRow = rows[i];
       let rowData = currentRow.querySelectorAll("td");
-      let targetData = Number(rowData[indexOfData].innerHTML());
-      if (minVal <= targetValue && targetValue <= maxVal) {
-        targetData[indexOfData].classList.add("highlight");
+      let targetData = Number(
+        CleanPopulationString(rowData[indexOfData].innerHTML),
+      );
+      if (targetData >= minVal && targetData <= maxVal) {
+        EasyLog();
+        currentRow.classList.add("highlight");
       }
     }
   } else {
+    // Otherwise we are querying text
     let targetValue = GetValueById(searchFor[0]).toLowerCase();
     for (let i = 1; i < rows.length; i++) {
       let currentRow = rows[i];
@@ -79,6 +89,10 @@ function AddHighlights(searchFor, indexOfData) {
 //////////////////////
 // Helper Functions //
 //////////////////////
+
+function EasyLog() {
+  console.log("You hit my battleship!");
+}
 
 function GetValueById(id, isInt = false) {
   let element = document.querySelector(id);
