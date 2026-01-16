@@ -17,19 +17,35 @@ window.onload = function () {
 function HandleCityClick() {
   ClearData();
   AddHighlights(["#cityInput"], 0);
+  CreateResults();
+  ClearInputsExcept(["cityInput"]);
 }
 function HandleCountryClick() {
   ClearData();
   AddHighlights(["#countryInput"], 1);
+  CreateResults();
+  ClearInputsExcept(["countryInput"]);
 }
 function HandlePopulationClick() {
   ClearData();
   AddHighlights(["#populationMinInput", "#populationMaxInput"], 2);
+  CreateResults();
+  ClearInputsExcept(["populationMinInput", "populationMaxInput"]);
 }
 
 ////////////////////
 // Main Functions //
 ////////////////////
+
+function CreateResults() {
+  let target = document.querySelector("#results");
+  let html = `<ul class="result-list">`;
+  for (let i = 0; i < results.length; i++) {
+    html += `<li>${results[i]}</li>`;
+  }
+  html += "</ul>";
+  target.innerHTML = html;
+}
 
 function CreateTables() {
   let table = document.querySelector("#theTableContainer");
@@ -68,8 +84,8 @@ function AddHighlights(searchFor, indexOfData) {
         CleanPopulationString(rowData[indexOfData].innerHTML),
       );
       if (targetData >= minVal && targetData <= maxVal) {
-        EasyLog();
         currentRow.classList.add("highlight");
+        results.push(GenerateResultString(rowData));
       }
     }
   } else {
@@ -81,7 +97,19 @@ function AddHighlights(searchFor, indexOfData) {
       let targetData = rowData[indexOfData].innerHTML.toLowerCase();
       if (targetData.includes(targetValue)) {
         currentRow.classList.add("highlight");
+        results.push(GenerateResultString(rowData));
       }
+    }
+  }
+}
+function ClearInputsExcept(safeInputArray) {
+  let allInputs = document.querySelectorAll("input");
+  for (let i = 0; i < allInputs.length; i++) {
+    let currentInput = allInputs[i];
+    // Dirty way to do this
+    if (!safeInputArray.includes(currentInput.id)) {
+      currentInput.value = "";
+      EasyLog();
     }
   }
 }
@@ -126,6 +154,13 @@ function AddButtonListenerById(idName, func) {
 
 function CleanPopulationString(strToBeNum) {
   return Number(strToBeNum.replaceAll(",", ""));
+}
+
+function GenerateResultString(rowList) {
+  let city = rowList[0].innerHTML;
+  let country = rowList[1].innerHTML;
+  let population = rowList[2].innerHTML;
+  return `${city}, ${country} (${population})`;
 }
 
 // Keeping this at the bottom but its global
