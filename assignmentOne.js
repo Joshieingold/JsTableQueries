@@ -1,173 +1,18 @@
-////////////
-// Global //
-////////////
+/////////////
+// Globals //
+/////////////
 
 let results = [];
 
-window.onload = function () {
-  buildTable();
-  AddButtonListener("#cityButton", handleCityButton);
-  AddButtonListener("#countryButton", handleCountryButton);
-  AddButtonListener("#populationButton", handlePopulationButton);
-};
+///////////// /////
+// Main Function //
+///////////// /////
 
-///////////////////////////
-// Button Click Handlers //
-///////////////////////////
+///////////// ///////
+// Helper Function //
+///////////// ///////
 
-// City Button Logic
-function handleCityButton() {
-  clearTableSelections(); // Removes all highlights
-  let city = getValueFromQuery("#cityInput").toLowerCase();
-  let rows = document.querySelectorAll("tr");
-  for (let rowIndex = 1; rowIndex < rows.length; rowIndex++) {
-    let row = rows[rowIndex];
-    let data = row.querySelectorAll("td");
-    let dataCity = data[0].innerHTML.toLowerCase();
-    if (dataCity.includes(city)) {
-      row.classList.add("highlight"); // Adds all the highlights for this query
-      results.push(generateResultString(data));
-    }
-  }
-  refreshResults(); // Generates the results section!
-  clearInputsExcept(["cityInput"]); // Clears Inputs that are not in this list
-}
-
-// Country Button Logic
-function handleCountryButton() {
-  clearTableSelections();
-  let country = getValueFromQuery("#countryInput").toLowerCase();
-  let rows = document.querySelectorAll("tr");
-  for (let rowIndex = 1; rowIndex < rows.length; rowIndex++) {
-    let row = rows[rowIndex];
-    let data = row.querySelectorAll("td");
-    let dataCountry = data[1].innerHTML.toLowerCase();
-    if (dataCountry.includes(country)) {
-      row.classList.add("highlight");
-      results.push(generateResultString(data));
-    }
-  }
-  refreshResults();
-  clearInputsExcept(["countryInput"]);
-}
-
-// Population Button Logic
-function handlePopulationButton() {
-  clearTableSelections();
-  let min = getValueFromQuery("#populationMinInput", true);
-  let max = getValueFromQuery("#populationMaxInput", true);
-  if (max === 0) {
-    // With a small python script found this is the max value
-    max = 13076300; // Still unideal, better would be to do it in js on load
-  }
-  let rows = document.querySelectorAll("tr");
-  for (let rowIndex = 1; rowIndex < rows.length; rowIndex++) {
-    let row = rows[rowIndex];
-    let data = row.querySelectorAll("td");
-    let dataPopulation = Number(
-      data[2].innerHTML.toLowerCase().replaceAll(",", ""),
-    );
-    if (dataPopulation >= min && dataPopulation <= max) {
-      row.classList.add("highlight");
-      results.push(generateResultString(data));
-    }
-  }
-  refreshResults();
-  clearInputsExcept(["populationMinInput", "populationMaxInput"]);
-}
-
-////////////////////
-// Main Functions //
-////////////////////
-
-// Generates table based on population data
-function buildTable(targetID = "#theTableContainer") {
-  let html = "<table><tr><th>City</th><th>Country</th><th>Population</th></tr>";
-  for (let i = 0; i < PLACES.length; i++) {
-    let currentPlace = PLACES[i].split(",");
-    let city = currentPlace[0];
-    let country = currentPlace[1];
-    let population = currentPlace[2];
-    html += "<tr>";
-    html += `<td>${city}</td>`;
-    html += `<td>${country}</td>`;
-    html += `<td>${(+population).toLocaleString()}</td>`; // Pain in my soul
-    html += "</tr>";
-  }
-  html += "</table>";
-  document.querySelector(targetID).innerHTML = html;
-}
-
-// Update results HTML with list
-function refreshResults() {
-  let html = "";
-  if (results.length < 1) {
-    html += "No Matches Found";
-  } else {
-    html += "<ul class='result-list'>";
-    for (let i = 0; i < results.length; i++) {
-      html += `<li>${results[i]}</li>`;
-    }
-    html += "</ul>";
-  }
-  document.querySelector("#results").innerHTML = html;
-}
-
-// Clears Highlights and Global results
-function clearTableSelections() {
-  let highlightList = document.querySelectorAll(".highlight"); // get all highlights
-  for (let i = 0; i < highlightList.length; i++) {
-    highlightList[i].classList.remove("highlight"); // remove them all
-  }
-  results = []; // IMPORTANT TO CLEAR THE GLOBAL RESULTS
-  refreshResults();
-}
-
-// Basically a toString method for the table
-function generateResultString(cellArray) {
-  if (cellArray.length != 3) {
-    console.log(`Error: ${cellArray} does not have 3 Items!`);
-    return "Error..";
-  }
-  return `${cellArray[0].innerHTML}, ${cellArray[1].innerHTML} (${cellArray[2].innerHTML})`;
-}
-
-//////////////////////
-// Helper Functions //
-//////////////////////
-
-// Clear inputs if they are not inclued in safe array provided
-function clearInputsExcept(safeIdArray) {
-  let allInputs = document.querySelectorAll("input");
-  for (let i = 0; i < allInputs.length; i++) {
-    let currentInput = allInputs[i];
-    // if its not safe, clear it
-    if (!safeIdArray.includes(currentInput.id)) {
-      currentInput.value = "";
-    }
-  }
-}
-
-// General Function to add an event listener with an id
-function AddButtonListener(btnID, func) {
-  let domVal = document.querySelector(btnID);
-  domVal.addEventListener("click", func);
-}
-
-// Gets a value from an id and can specify whether or not is a number
-// default is not an int
-function getValueFromQuery(itemId, isInt = false) {
-  let domVal = document.querySelector(itemId);
-  let valStr = domVal.value;
-  // if you want an int back
-  if (isInt) {
-    let fixedNum = valStr.replaceAll(",", ""); // fix formatting :( not general..
-    return Number(fixedNum);
-  }
-  return valStr;
-}
-
-// Table data. I like it down here so its not in the way
+// Keeping this at the bottom but its global
 const PLACES = [
   "Madrid,Spain,3255944",
   "Santiago,Chile,4837295",
