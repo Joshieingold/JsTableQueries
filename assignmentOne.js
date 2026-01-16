@@ -2,7 +2,8 @@
 // Globals //
 /////////////
 
-let results = [];
+let results = []; // Stores formatted strings for results
+
 window.onload = function () {
   CreateTables();
   AddButtonListenerById("#cityButton", HandleCityClick);
@@ -20,12 +21,14 @@ function HandleCityClick() {
   CreateResults();
   ClearInputsExcept(["cityInput"]);
 }
+
 function HandleCountryClick() {
   ClearData();
   AddHighlights(["#countryInput"], 1);
   CreateResults();
   ClearInputsExcept(["countryInput"]);
 }
+
 function HandlePopulationClick() {
   ClearData();
   AddHighlights(["#populationMinInput", "#populationMaxInput"], 2);
@@ -37,9 +40,10 @@ function HandlePopulationClick() {
 // Main Functions //
 ////////////////////
 
+// Generates Results section based on global variable
 function CreateResults() {
   let target = document.querySelector("#results");
-  let html = `<ul class="result-list">`;
+  let html = `<ul class="result-list">`; // for some extra css-ing
   for (let i = 0; i < results.length; i++) {
     html += `<li>${results[i]}</li>`;
   }
@@ -47,6 +51,7 @@ function CreateResults() {
   target.innerHTML = html;
 }
 
+// Generates the main table on load of the page
 function CreateTables() {
   let table = document.querySelector("#theTableContainer");
   let html = "<table><tr><th>City</th><th>Country</th><th>Population</th></th>";
@@ -55,7 +60,7 @@ function CreateTables() {
     html += `<tr>`;
     for (let p = 0; p < 3; p++) {
       if (p === 2) {
-        html += `<td>${Number(rowData[p]).toLocaleString()}</td>`;
+        html += `<td>${Number(rowData[p]).toLocaleString()}</td>`; // bane of my existence
       } else {
         html += `<td>${rowData[p]}</td>`;
       }
@@ -66,6 +71,7 @@ function CreateTables() {
   table.innerHTML = html;
 }
 
+// Way overgeneralized function for adding highlights for matched data
 function AddHighlights(searchFor, indexOfData) {
   // Rows are the same each time.
   let rows = document.querySelectorAll("tr");
@@ -81,11 +87,11 @@ function AddHighlights(searchFor, indexOfData) {
       let currentRow = rows[i];
       let rowData = currentRow.querySelectorAll("td");
       let targetData = Number(
-        CleanPopulationString(rowData[indexOfData].innerHTML),
+        CleanPopulationString(rowData[indexOfData].innerHTML), // not sure why my lsp likes this comma
       );
       if (targetData >= minVal && targetData <= maxVal) {
         currentRow.classList.add("highlight");
-        results.push(GenerateResultString(rowData));
+        results.push(GenerateResultString(rowData)); // add the matched data to the results
       }
     }
   } else {
@@ -102,11 +108,13 @@ function AddHighlights(searchFor, indexOfData) {
     }
   }
 }
+
+// Will find all inputs and clear them unless specified in the list
 function ClearInputsExcept(safeInputArray) {
   let allInputs = document.querySelectorAll("input");
   for (let i = 0; i < allInputs.length; i++) {
     let currentInput = allInputs[i];
-    // Dirty way to do this
+    // Likely a dirty way to do this
     if (!safeInputArray.includes(currentInput.id)) {
       currentInput.value = "";
       EasyLog();
@@ -118,10 +126,12 @@ function ClearInputsExcept(safeInputArray) {
 // Helper Functions //
 //////////////////////
 
+// For testing kept it in because the joke kept me sane
 function EasyLog() {
   console.log("You hit my battleship!");
 }
 
+// Returns value of an input, can be specified to be int but default is string
 function GetValueById(id, isInt = false) {
   let element = document.querySelector(id);
   let docVal = element.value;
@@ -131,11 +141,14 @@ function GetValueById(id, isInt = false) {
   }
   return docVal;
 }
+
 // Probably overkill..
 function ClearData() {
   ClearHighlights();
   ClearResults();
 }
+
+// Goes through all elements in the table and clears their highlights
 function ClearHighlights() {
   let highlightList = document.querySelectorAll(".highlight");
   for (let i = 0; i < highlightList.length; i++) {
@@ -143,19 +156,24 @@ function ClearHighlights() {
     highlightItem.classList.remove("highlight");
   }
 }
+
+// Sets results to empty.. not needed to be a function but maybe if there was more logic
 function ClearResults() {
   results = [];
 }
 
+// Adds an event lister to the page with id and the function to call for it
 function AddButtonListenerById(idName, func) {
   let button = document.querySelector(idName);
   button.addEventListener("click", func);
 }
 
+// Transforms the localstring values to numbers
 function CleanPopulationString(strToBeNum) {
   return Number(strToBeNum.replaceAll(",", ""));
 }
 
+// Creates formatted string for a rows data
 function GenerateResultString(rowList) {
   let city = rowList[0].innerHTML;
   let country = rowList[1].innerHTML;
