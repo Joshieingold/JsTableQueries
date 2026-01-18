@@ -43,12 +43,17 @@ function HandlePopulationClick() {
 // Generates Results section based on global variable
 function CreateResults() {
   let target = document.querySelector("#results");
-  let html = `<ul class="result-list">`; // for some extra css-ing
-  for (let i = 0; i < results.length; i++) {
-    html += `<li>${results[i]}</li>`;
+  console.log(results.length);
+  if (results.length == 0) {
+    target.innerHTML = "No Matches Found";
+  } else {
+    let html = `<ul class="result-list">`; // for some extra css-ing
+    for (let i = 0; i < results.length; i++) {
+      html += `<li>${results[i]}</li>`;
+    }
+    html += "</ul>";
+    target.innerHTML = html;
   }
-  html += "</ul>";
-  target.innerHTML = html;
 }
 
 // Generates the main table on load of the page
@@ -117,7 +122,6 @@ function ClearInputsExcept(safeInputArray) {
     // Likely a dirty way to do this
     if (!safeInputArray.includes(currentInput.id)) {
       currentInput.value = "";
-      EasyLog();
     }
   }
 }
