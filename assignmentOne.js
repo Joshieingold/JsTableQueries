@@ -43,7 +43,6 @@ function HandlePopulationClick() {
 // Generates Results section based on global variable
 function CreateResults() {
   let target = document.querySelector("#results");
-  console.log(results.length);
   if (results.length == 0) {
     target.innerHTML = "No Matches Found";
   } else {
@@ -149,7 +148,7 @@ function GetValueById(id, isInt = false) {
 // Probably overkill..
 function ClearData() {
   ClearHighlights();
-  ClearResults();
+  results = [];
 }
 
 // Goes through all elements in the table and clears their highlights
@@ -159,11 +158,6 @@ function ClearHighlights() {
     let highlightItem = highlightList[i];
     highlightItem.classList.remove("highlight");
   }
-}
-
-// Sets results to empty.. not needed to be a function but maybe if there was more logic
-function ClearResults() {
-  results = [];
 }
 
 // Adds an event lister to the page with id and the function to call for it
