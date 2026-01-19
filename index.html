@@ -10,32 +10,32 @@
   <body>
     <div class="page-title">Places with Search</div>
     <div class="content">
+      <!-- Table -->
       <div class="table-view panel" id="theTableContainer"></div>
       <div class="right-content">
+        <!-- Inputs Container -->
         <div class="input-pane panel">
           <div class="input-container">
             <label for="cityInput">City: </label>
             <input id="cityInput" />
             <button id="cityButton">Search by City</button>
           </div>
-
           <div class="input-container">
             <label for="countryInput">Country: </label>
             <input id="countryInput" />
             <button id="countryButton">Search by Country</button>
           </div>
-
           <div class="input-container">
             <label for="populationMinInput" min="1" value="1">Min: </label>
             <input id="populationMinInput" type="number" />
           </div>
-
           <div class="input-container">
             <label for="populationMaxInput">Max: </label>
             <input id="populationMaxInput" type="number" />
             <button id="populationButton">Search by Population Range</button>
           </div>
         </div>
+        <!-- Results Container -->
         <div class="result-pane panel">
           <h2>Results</h2>
           <div id="results" class="results-data"></div>
